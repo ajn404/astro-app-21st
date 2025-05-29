@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <style>
+      *,
+      *:before,
+      *:after {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+
+      body {
+        background: #15181a;
+        font-family: "Open Sans", Helvetica, Arial, sans-serif;
+      }
+
+      .skw-pages {
+        overflow: hidden;
+        position: relative;
+        height: 100vh;
+      }
+
+      .skw-page {
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 100%;
+      }
+      .skw-page__half {
+        position: absolute;
+        top: 0;
+        width: 50%;
+        height: 100vh;
+        transition: transform 1s;
+      }
+      .skw-page__half--left {
+        left: 0;
+        transform: translate3d(-32.4vh, 100%, 0);
+      }
+      .skw-page__half--right {
+        left: 50%;
+        transform: translate3d(32.4vh, -100%, 0);
+      }
+      .skw-page.active .skw-page__half {
+        transform: translate3d(0, 0, 0);
+      }
+      .skw-page__skewed {
+        overflow: hidden;
+        position: absolute;
+        top: 0;
+        width: 140%;
+        height: 100%;
+        transform: skewX(-18deg);
+        background: #000;
+      }
+      .skw-page__half--left .skw-page__skewed {
+        left: -40%;
+      }
+      .skw-page__half--right .skw-page__skewed {
+        right: -40%;
+      }
+      .skw-page__content {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-flow: column wrap;
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        padding: 0 30%;
+        color: #fff;
+        transform: skewX(18deg);
+        transition: transform 1s, opacity 1s;
+        background-size: cover;
+      }
+      .skw-page__half--left .skw-page__content {
+        padding-left: 30%;
+        padding-right: 30%;
+        transform-origin: 100% 0;
+      }
+      .skw-page__half--right .skw-page__content {
+        padding-left: 30%;
+        padding-right: 30%;
+        transform-origin: 0 100%;
+      }
+      .skw-page.inactive .skw-page__content {
+        opacity: 0.5;
+        transform: skewX(18deg) scale(0.95);
+      }
+      .skw-page__heading {
+        margin-bottom: 15px;
+        text-transform: uppercase;
+        font-size: 25px;
+        text-align: center;
+      }
+      .skw-page__description {
+        font-size: 18px;
+        text-align: center;
+      }
+      .skw-page__link {
+        color: #ffa0a0;
+      }
+      .skw-page-1 .skw-page__half--left .skw-page__content {
+        background-image: url("https://api.neix.in/random/?1");
+      }
+      .skw-page-1 .skw-page__half--right .skw-page__content {
+        background: #292929;
+      }
+      .skw-page-2 .skw-page__half--left .skw-page__content {
+        background: #292929;
+      }
+      .skw-page-2 .skw-page__half--right .skw-page__content {
+        background-image: url("https://api.neix.in/random/?2");
+      }
+      .skw-page-3 .skw-page__half--left .skw-page__content {
+        background-image: url("https://api.neix.in/random/?3");
+      }
+      .skw-page-3 .skw-page__half--right .skw-page__content {
+        background: #292929;
+      }
+      .skw-page-4 .skw-page__half--left .skw-page__content {
+        background: #292929;
+      }
+      .skw-page-4 .skw-page__half--right .skw-page__content {
+        background-image: url("https://api.neix.in/random/?4");
+      }
+      .skw-page-5 .skw-page__half--left .skw-page__content {
+        background-image: url("https://api.neix.in/random/?5");
+      }
+      .skw-page-5 .skw-page__half--right .skw-page__content {
+        background: #292929;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="skw-pages">
+      <div class="skw-page skw-page-1 active">
+        <div class="skw-page__half skw-page__half--left">
+          <div class="skw-page__skewed">
+            <div class="skw-page__content"></div>
+          </div>
+        </div>
+        <div class="skw-page__half skw-page__half--right">
+          <div class="skw-page__skewed">
+            <div class="skw-page__content">
+              <h2 class="skw-page__heading">Skewed One Page Scroll</h2>
+              <p class="skw-page__description">Just scroll down</p>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="skw-page skw-page-2">
+        <div class="skw-page__half skw-page__half--left">
+          <div class="skw-page__skewed">
+            <div class="skw-page__content">
+              <h2 class="skw-page__heading">Page 2</h2>
+              <p class="skw-page__description">
+                Nothing to do here, continue scrolling.
+              </p>
+            </div>
+          </div>
+        </div>
+        <div class="skw-page__half skw-page__half--right">
+          <div class="skw-page__skewed">
+            <div class="skw-page__content"></div>
+          </div>
+        </div>
+      </div>
+      <div class="skw-page skw-page-3">
+        <div class="skw-page__half skw-page__half--left">
+          <div class="skw-page__skewed">
+            <div class="skw-page__content"></div>
+          </div>
+        </div>
+        <div class="skw-page__half skw-page__half--right">
+          <div class="skw-page__skewed">
+            <div class="skw-page__content">
+              <h2 class="skw-page__heading">Page 3</h2>
+              <p class="skw-page__description">The end is near, I promise!</p>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="skw-page skw-page-4">
+        <div class="skw-page__half skw-page__half--left">
+          <div class="skw-page__skewed">
+            <div class="skw-page__content">
+              <h2 class="skw-page__heading">Page 4</h2>
+              <p class="skw-page__description">Ok, ok, just one more scroll!</p>
+            </div>
+          </div>
+        </div>
+        <div class="skw-page__half skw-page__half--right">
+          <div class="skw-page__skewed">
+            <div class="skw-page__content"></div>
+          </div>
+        </div>
+      </div>
+      <div class="skw-page skw-page-5">
+        <div class="skw-page__half skw-page__half--left">
+          <div class="skw-page__skewed">
+            <div class="skw-page__content"></div>
+          </div>
+        </div>
+        <div class="skw-page__half skw-page__half--right">
+          <div class="skw-page__skewed">
+            <div class="skw-page__content">
+              <h2 class="skw-page__heading">Epic finale</h2>
+              <p class="skw-page__description">
+                Feel free to check
+                <a
+                  class="skw-page__link"
+                  href="https://codepen.io/suez/pens/public/"
+                  target="_blank"
+                  >my other pens</a
+                >
+                and follow me on
+                <a
+                  class="skw-page__link"
+                  href="https://twitter.com/NikolayTalanov"
+                  target="_blank"
+                  >Twitter</a
+                >
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        let curPage = 1;
+        const numOfPages = document.querySelectorAll(".skw-page").length;
+        const animTime = 1000;
+        let scrolling = false;
+        const pgPrefix = ".skw-page-";
+
+        function pagination() {
+          scrolling = true;
+
+          const currentPageEl = document.querySelector(pgPrefix + curPage);
+          if (currentPageEl) {
+            currentPageEl.classList.remove("inactive");
+            currentPageEl.classList.add("active");
+          }
+
+          const prevPageEl = document.querySelector(pgPrefix + (curPage - 1));
+          if (prevPageEl) {
+            prevPageEl.classList.add("inactive");
+          }
+
+          const nextPageEl = document.querySelector(pgPrefix + (curPage + 1));
+          if (nextPageEl) {
+            nextPageEl.classList.remove("active");
+          }
+
+          setTimeout(() => {
+            scrolling = false;
+          }, animTime);
+        }
+
+        function navigateUp() {
+          if (curPage === 1) return;
+          curPage--;
+          pagination();
+        }
+
+        function navigateDown() {
+          if (curPage === numOfPages) return;
+          curPage++;
+          pagination();
+        }
+
+        window.addEventListener("wheel", function (e) {
+          if (scrolling) return;
+          if (e.deltaY < 0) {
+            navigateUp();
+          } else {
+            navigateDown();
+          }
+        });
+
+        // 键盘按键事件
+        window.addEventListener("keydown", function (e) {
+          if (scrolling) return;
+          if (e.key === "ArrowUp") {
+            navigateUp();
+          } else if (e.key === "ArrowDown") {
+            navigateDown();
+          }
+        });
+      });
+    </script>
+  </body>
+</html>
