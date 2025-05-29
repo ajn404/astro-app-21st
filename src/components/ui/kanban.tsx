@@ -4,13 +4,14 @@ import {
   useState,
   DragEvent,
   FormEvent,
+  useEffect,
 } from "react";
 import { FiPlus, FiTrash } from "react-icons/fi";
 import { motion } from "framer-motion";
 import { FaFire } from "react-icons/fa";
 import { cn } from "@/lib/utils";
 
-export const Kanban = () => {
+export default () => {
   return (
     <div className={cn("h-screen w-full bg-neutral-900 text-neutral-50")}>
       <Board />
@@ -20,6 +21,10 @@ export const Kanban = () => {
 
 const Board = () => {
   const [cards, setCards] = useState(DEFAULT_CARDS);
+
+  useEffect(() => {
+    console.log('board')
+  })
 
   return (
     <div className="flex h-full w-full gap-3 overflow-scroll p-12">
@@ -188,9 +193,8 @@ const Column = ({
         onDrop={handleDragEnd}
         onDragOver={handleDragOver}
         onDragLeave={handleDragLeave}
-        className={`h-full w-full transition-colors ${
-          active ? "bg-neutral-800/50" : "bg-neutral-800/0"
-        }`}
+        className={`h-full w-full transition-colors ${active ? "bg-neutral-800/50" : "bg-neutral-800/0"
+          }`}
       >
         {filteredCards.map((c) => {
           return <Card key={c.id} {...c} handleDragStart={handleDragStart} />;
@@ -267,11 +271,10 @@ const BurnBarrel = ({
       onDrop={handleDragEnd}
       onDragOver={handleDragOver}
       onDragLeave={handleDragLeave}
-      className={`mt-10 grid h-56 w-56 shrink-0 place-content-center rounded border text-3xl ${
-        active
+      className={`mt-10 grid h-56 w-56 shrink-0 place-content-center rounded border text-3xl ${active
           ? "border-red-800 bg-red-800/20 text-red-500"
           : "border-neutral-500 bg-neutral-500/20 text-neutral-500"
-      }`}
+        }`}
     >
       {active ? <FaFire className="animate-bounce" /> : <FiTrash />}
     </div>

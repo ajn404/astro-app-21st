@@ -3,9 +3,9 @@ title: '看板'
 layout: ../layouts/main.astro
 ---
 
-import { Kanban } from 'src/components/ui/kanban.tsx'
+import Kanban from 'src/components/ui/kanban.tsx'
 
-<Kanban clinet:only='react'/>
+<Kanban clinet:load />
 
 <div class="grid place-items-center h-screen content-center">
  <a
