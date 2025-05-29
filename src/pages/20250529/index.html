@@ -6,6 +6,9 @@
     <title>Document</title>
   </head>
   <body>
+    <div class="absolute w-full h-full bg-amber-50 hidden" id="loading">
+        加载中
+    </div>
     <script>
       function loadImg(baseUrl = "https://api.neix.in/random/") {
         return new Promise((resolve, reject) => {
@@ -26,14 +29,42 @@
         });
       }
 
-      (async () => {
-        for (let item of new Array(100).fill(0)) {
-          const res = await loadImg();
-          console.log(res);
-          if (res) {
-            document.body.append(res);
+      // 控制并发数量的任务执行器
+      async function asyncPool(concurrency, iterable, iteratorFn) {
+        const results = [];
+        const executing = [];
+
+        for (const item of iterable) {
+          const p = Promise.resolve().then(() => iteratorFn(item));
+          results.push(p);
+
+          if (concurrency <= iterable.length) {
+            const e = p.then(() => executing.splice(executing.indexOf(e), 1));
+            executing.push(e);
+            if (executing.length >= concurrency) {
+              await Promise.race(executing); // 等待最早的一个完成
+            }
           }
         }
+
+        return Promise.all(results);
+      }
+
+      (async () => {
+        const total = 100;
+        const concurrency = 5; // 同时加载5张图片
+
+        const promises = new Array(total)
+          .fill(0)
+          .map((_, i) => () => loadImg());
+        document.getElementById('loading').style.display = 'block'
+        const imgs = await asyncPool(concurrency, promises, (fn) => fn());
+        document.getElementById('loading').style.display = 'none'
+
+        // 全部加载完成后插入页面
+        imgs.forEach((img) => document.body.appendChild(img));
+
+        console.log("所有图片加载完成！");
       })();
     </script>
     <style>
