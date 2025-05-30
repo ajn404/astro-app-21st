@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CSS Filter 特效演示</title>
+    <style>
+        .container {
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
+            flex-wrap: wrap;
+            padding: 32px;
+            background: #f5f5f5;
+        }
+        .effect {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            font-size: 14px;
+        }
+        .effect img {
+            width: 80vw;
+            object-fit: cover;
+            border-radius: 8px;
+            margin-bottom: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        }
+        .blur    img { filter: blur(4px); }
+        .grayscale img { filter: grayscale(1); }
+        .sepia   img { filter: sepia(1); }
+        .invert  img { filter: invert(1); }
+        .brightness img { filter: brightness(1.5); }
+        .contrast img { filter: contrast(2); }
+        .hue-rotate img { filter: hue-rotate(120deg); }
+        .saturate img { filter: saturate(3); }
+        .shadow img { filter: drop-shadow(8px 8px 8px #1976d2); }
+        .multi img { filter: grayscale(0.5) blur(2px) brightness(1.2) contrast(1.5); }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>filter 特效</h2>
+        <div class="effect blur">
+            <img src="https://api.neix.in/random/" alt="blur"/>
+            <span>blur</span>
+        </div>
+        <div class="effect grayscale">
+            <img src="https://api.neix.in/random/" alt="grayscale"/>
+            <span>grayscale</span>
+        </div>
+        <div class="effect sepia">
+            <img src="https://api.neix.in/random/" alt="sepia"/>
+            <span>sepia</span>
+        </div>
+        <div class="effect invert">
+            <img src="https://api.neix.in/random/" alt="invert"/>
+            <span>invert</span>
+        </div>
+        <div class="effect brightness">
+            <img src="https://api.neix.in/random/" alt="brightness"/>
+            <span>brightness</span>
+        </div>
+        <div class="effect contrast">
+            <img src="https://api.neix.in/random/" alt="contrast"/>
+            <span>contrast</span>
+        </div>
+        <div class="effect hue-rotate">
+            <img src="https://api.neix.in/random/" alt="hue-rotate"/>
+            <span>hue-rotate</span>
+        </div>
+        <div class="effect saturate">
+            <img src="https://api.neix.in/random/" alt="saturate"/>
+            <span>saturate</span>
+        </div>
+        <div class="effect shadow">
+            <img src="https://api.neix.in/random/" alt="drop-shadow"/>
+            <span>drop-shadow</span>
+        </div>
+        <div class="effect multi">
+            <img src="https://api.neix.in/random/" alt="multi"/>
+            <span>组合特效</span>
+        </div>
+    </div>
+</body>
+</html>
