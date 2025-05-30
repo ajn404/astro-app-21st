@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0" />
+  <title>炫酷三维地图</title>
+  <style>
+    html, body { margin: 0; overflow: hidden; background: #000;width: 100vw;
+    height: 100vh; }
+    canvas { display: block;height: 100vh; }
+  </style>
+</head>
+<body>
+  <div id="map"></div>
+
+  <script type="importmap">
+  {
+    "imports": {
+      "three": "https://unpkg.com/three@0.165.0/build/three.module.js", 
+      "three-tile": "https://unpkg.com/three-tile@0.6.1/dist/three-tile.js" ,
+      "three/examples/": "https://unpkg.com/three@0.174.0/examples/jsm/"
+    }
+  }
+  </script>
+
+  <script type="module">
+    import * as THREE from "three";
+    import * as tt from "three-tile";
+
+    // MapBox Token
+    const MAPBOXKEY =
+				"pk.eyJ1Ijoic3ZjLW9rdGEtbWFwYm94LXN0YWZmLWFjY2VzcyIsImEiOiJjbG5sMnBoMm0xeWZzMmtyaWl0b2wyN2FuIn0.-zx1KP3Oy-7YzWcvhbv22Q";
+
+
+    // 数据源
+    const mapBoxImgSource = new tt.plugin.MapBoxSource({
+      token: MAPBOXKEY,
+      dataType: "image",
+      style: "mapbox.satellite"
+    });
+    const mapBoxDemSource = new tt.plugin.MapBoxSource({
+      token: MAPBOXKEY,
+      dataType: "terrain-rgb",
+      style: "mapbox.terrain-rgb",
+      maxLevel: 15
+    });
+
+    // 创建地图
+    const map = tt.TileMap.create({
+      imgSource: mapBoxImgSource,
+      demSource: mapBoxDemSource,
+      lon0: 90,
+      minLevel: 2,
+      maxLevel: 18
+    });
+    map.rotateX(-Math.PI / 2);
+
+    // 相机位置
+    const centerGeo = new THREE.Vector3(105, 30, 0);
+    const camersGeo = new THREE.Vector3(105, 10, 3000);
+    const centerPostion = map.localToWorld(map.geo2pos(centerGeo));
+    const cameraPosition = map.localToWorld(map.geo2pos(camersGeo));
+
+    const viewer = new tt.plugin.GLViewer("#map", {
+      centerPostion,
+      cameraPosition
+    });
+
+    viewer.scene.add(map);
+
+    // 动态光源
+    const sunLight = new THREE.DirectionalLight(0xffffff, 1);
+    sunLight.position.set(1000, 1000, 1000);
+    sunLight.castShadow = true;
+    viewer.scene.add(sunLight);
+
+    const ambientLight = new THREE.AmbientLight(0x404040);
+    viewer.scene.add(ambientLight);
+
+    // 星空背景
+    const loader = new THREE.CubeTextureLoader();
+    loader.setPath('https://threejs.org/examples/textures/cube/Park3Med/'); 
+    const cubeTexture = loader.load([
+      'px.jpg', 'nx.jpg', 'py.jpg', 'ny.jpg', 'pz.jpg', 'nz.jpg'
+    ]);
+    viewer.scene.background = cubeTexture;
+
+    // 雨滴粒子
+    function createParticles(count = 1000, color = 0xffffff) {
+      const geometry = new THREE.BufferGeometry();
+      const positions = new Float32Array(count * 3);
+      for (let i = 0; i < count * 3; i++) {
+        positions[i] = (Math.random() - 0.5) * 2000;
+      }
+      geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+      const material = new THREE.PointsMaterial({ color, size: 2 });
+      const particles = new THREE.Points(geometry, material);
+      return particles;
+    }
+
+    const rain = createParticles(5000, 0xaaaaaa);
+    viewer.scene.add(rain);
+
+    // 后处理
+    import { EffectComposer } from 'three/examples/postprocessing/EffectComposer.js';
+    import { RenderPass } from 'three/examples/postprocessing/RenderPass.js';
+    import { UnrealBloomPass } from 'three/examples/postprocessing/UnrealBloomPass.js';
+
+    const composer = new EffectComposer(viewer.renderer);
+    composer.addPass(new RenderPass(viewer.scene, viewer.camera));
+
+    const bloomPass = new UnrealBloomPass(
+      new THREE.Vector2(window.innerWidth, window.innerHeight),
+      1.5, 0.4, 0.85
+    );
+    composer.addPass(bloomPass);
+
+    // 点击高亮
+    const raycaster = new THREE.Raycaster();
+    const mouse = new THREE.Vector2();
+
+    document.addEventListener('click', (event) => {
+      mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
+      mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
+      raycaster.setFromCamera(mouse, viewer.camera);
+      const intersects = raycaster.intersectObject(map);
+      if (intersects.length > 0) {
+        const point = intersects[0].point;
+        const highlight = new THREE.Mesh(
+          new THREE.SphereGeometry(5, 16, 16),
+          new THREE.MeshBasicMaterial({ color: 0xff00ff, emissive: 0xff00ff })
+        );
+        highlight.position.copy(point);
+        viewer.scene.add(highlight);
+        setTimeout(() => viewer.scene.remove(highlight), 2000);
+      }
+    });
+
+    // 动画循环
+    function animate() {
+      requestAnimationFrame(animate);
+
+      // 更新太阳角度
+      const time = Date.now();
+      sunLight.position.set(
+        Math.cos(time / 10000) * 1000,
+        500,
+        Math.sin(time / 10000) * 1000
+      );
+      sunLight.lookAt(viewer.camera.position);
+
+      // 更新粒子
+      const positions = rain.geometry.attributes.position.array;
+      for (let i = 1; i < positions.length; i += 3) {
+        positions[i] -= 0.5;
+        if (positions[i] < -1000) positions[i] = 1000;
+      }
+      rain.geometry.attributes.position.needsUpdate = true;
+
+      composer.render();
+    }
+
+    animate();
+  </script>
+</body>
+</html>
