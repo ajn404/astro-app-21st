@@ -1,0 +1,30 @@
+---
+import Sidebar from '../components/Sidebar.astro';
+---
+
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width" />
+    <title>你的网站标题</title>
+  </head>
+  <body>
+    <div class="container">
+      <Sidebar />
+      <main>
+        <slot />
+      </main>
+    </div>
+  </body>
+</html>
+
+<style>
+  .container {
+    display: flex;
+  }
+
+  main {
+    flex: 1;
+    padding: 1rem;
+  }
+</style> 
