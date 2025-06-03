@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Mac Touchpad Drawing Board</title>
+  <style>
+    body {
+      margin: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      background: #f0f0f0;
+      font-family: sans-serif;
+    }
+    canvas {
+      border: 2px solid #ccc;
+      background: white;
+      touch-action: none; /* 禁止浏览器默认触摸行为 */
+      cursor: crosshair;
+      margin-top: 10px;
+    }
+    .toolbar {
+      margin-top: 10px;
+    }
+    .toolbar input {
+      margin: 0 5px;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="toolbar">
+    <label>颜色：<input type="color" id="colorPicker" value="#000000"></label>
+    <label>粗细：<input type="range" id="lineWidth" min="1" max="20" value="3"></label>
+    <button id="clearBtn">清空</button>
+  </div>
+
+  <canvas id="drawingCanvas" width="800" height="600"></canvas>
+
+  <script>
+    const canvas = document.getElementById('drawingCanvas');
+const ctx = canvas.getContext('2d');
+const colorPicker = document.getElementById('colorPicker');
+const lineWidthSlider = document.getElementById('lineWidth');
+const clearBtn = document.getElementById('clearBtn');
+
+let drawing = false;
+
+// 设置初始画笔样式
+ctx.strokeStyle = colorPicker.value;
+ctx.lineWidth = parseInt(lineWidthSlider.value);
+ctx.lineCap = 'round'; // 圆头线条，更自然
+
+// 开始绘制
+function startDrawing(e) {
+  drawing = true;
+  const { offsetX, offsetY } = getCoordinates(e);
+  ctx.beginPath();
+  ctx.moveTo(offsetX, offsetY);
+}
+
+// 绘制中
+function draw(e) {
+  if (!drawing) return;
+  const { offsetX, offsetY } = getCoordinates(e);
+  ctx.lineTo(offsetX, offsetY);
+  ctx.stroke();
+}
+
+// 停止绘制
+function stopDrawing() {
+  drawing = false;
+  ctx.closePath();
+}
+
+// 清除画布
+clearBtn.addEventListener('click', () => {
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+});
+
+// 更新画笔颜色
+colorPicker.addEventListener('input', () => {
+  ctx.strokeStyle = colorPicker.value;
+});
+
+// 更新画笔粗细
+lineWidthSlider.addEventListener('input', () => {
+  ctx.lineWidth = parseInt(lineWidthSlider.value);
+});
+
+// 获取坐标（兼容鼠标和触摸）
+function getCoordinates(e) {
+  if (e.touches && e.touches.length > 0) {
+    const rect = canvas.getBoundingClientRect();
+    return {
+      offsetX: e.touches[0].clientX - rect.left,
+      offsetY: e.touches[0].clientY - rect.top
+    };
+  } else {
+    return {
+      offsetX: e.offsetX,
+      offsetY: e.offsetY
+    };
+  }
+}
+
+// 添加事件监听器
+canvas.addEventListener('mousedown', startDrawing);
+canvas.addEventListener('mousemove', draw);
+canvas.addEventListener('mouseup', stopDrawing);
+canvas.addEventListener('mouseleave', stopDrawing);
+
+// 触摸支持
+canvas.addEventListener('touchstart', startDrawing);
+canvas.addEventListener('touchmove', draw);
+canvas.addEventListener('touchend', stopDrawing);
+  </script>
+</body>
+</html>
