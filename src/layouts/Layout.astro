@@ -1,5 +1,5 @@
 ---
-import Sidebar from '../components/Sidebar.astro';
+import Sidebar from "../components/AppSidebar.tsx";
 ---
 
 <html lang="en">
@@ -10,7 +10,7 @@ import Sidebar from '../components/Sidebar.astro';
   </head>
   <body>
     <div class="container">
-      <Sidebar />
+      <Sidebar pathname={Astro.url.pathname} client:load />
       <main>
         <slot />
       </main>
@@ -27,4 +27,4 @@ import Sidebar from '../components/Sidebar.astro';
     flex: 1;
     padding: 1rem;
   }
-</style> 
+</style>

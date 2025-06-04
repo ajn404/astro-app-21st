@@ -1,32 +1,24 @@
----
-const pages = await Promise.all(
-  Object.entries(import.meta.glob<{ default: any }>(
-    '../pages/**/*.{astro,md,mdx,html}', { eager: true })
-  ).map(async ([path, module]) => {
-    return {
-      file: path,
-      ...module.default
-    };
-  })
-);
-
-type NavPage = {
-  file: string;
-  [key: string]: any;
-};
-
-type NavTreeNode = {
-  __children: Record<string, NavTreeNode>;
-  __page: NavPage | null;
-};
-
-type NavItem = {
+export type NavItem = {
   title: string;
   path: string;
   children?: NavItem[];
 };
 
-// 递归构建层级菜单结构
+// 1. 获取所有页面文件
+const pageModules = import.meta.glob<{ default: any }>(
+  '../../pages/**/*.{astro,md,mdx,html}', { eager: true }
+);
+
+// 2. 生成页面数据
+const pages = Object.entries(pageModules).map(([path, mod]) => ({
+  file: path,
+  ...mod.default
+}));
+
+// 3. 递归构建层级菜单结构
+type NavPage = { file: string; [key: string]: any };
+type NavTreeNode = { __children: Record<string, NavTreeNode>; __page: NavPage | null };
+
 function buildTree(pages: NavPage[]): Record<string, NavTreeNode> {
   const root: Record<string, NavTreeNode> = {};
   for (const page of pages) {
@@ -66,54 +58,4 @@ function treeToNav(tree: Record<string, NavTreeNode>, parentPath = ''): NavItem[
 }
 
 const tree = buildTree(pages);
-const navigation: NavItem[] = treeToNav(tree);
----
-
-<nav class="sidebar">
-  <ul>
-    {navigation.map(item => (
-      <li>
-        <a href={item.path} class:list={[
-          'nav-link',
-          { active: Astro.url.pathname === item.path }
-        ]}>
-          {item.title}
-        </a>
-      </li>
-    ))}
-  </ul>
-</nav>
-
-<style>
-  .sidebar {
-    width: 250px;
-    height: 100vh;
-    padding: 1rem;
-    background-color: #f8f9fa;
-    border-right: 1px solid #e9ecef;
-  }
-
-  ul {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-  }
-
-  .nav-link {
-    display: block;
-    padding: 0.5rem 1rem;
-    color: #333;
-    text-decoration: none;
-    border-radius: 4px;
-    transition: background-color 0.2s;
-  }
-
-  .nav-link:hover {
-    background-color: #e9ecef;
-  }
-
-  .nav-link.active {
-    background-color: #007bff;
-    color: white;
-  }
-</style> 
+export const sidebarMenu: NavItem[] = treeToNav(tree); 
