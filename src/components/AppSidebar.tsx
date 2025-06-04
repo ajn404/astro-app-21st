@@ -14,7 +14,6 @@ import { sidebarMenu, NavItem } from './ui/sidebar-menu-data';
 
 // 递归渲染多级菜单
 function renderMenu(items: NavItem[], currentPath: string) {
-  console.log('items',items)
   return (
     <SidebarMenu>
       {items.map((item) => (

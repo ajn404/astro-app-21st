@@ -5,15 +5,18 @@ export type NavItem = {
 };
 
 // 1. 获取所有页面文件
-const pageModules = import.meta.glob<{ default: any }>(
-  '../../pages/**/*.{astro,md,mdx,html}', { eager: true }
+const pages = await Promise.all(
+  Object.entries(import.meta.glob<{ default: any }>(
+    '../pages/**/*.{astro,md,mdx,html}', { eager: true })
+  ).map(async ([path, module]) => {
+    if (!module.default) return null; // 过滤掉没有默认导出的页面
+    return {
+      file: path,
+      ...module.default
+    };
+  })
 );
-
-// 2. 生成页面数据
-const pages = Object.entries(pageModules).map(([path, mod]) => ({
-  file: path,
-  ...mod.default
-}));
+const validPages = pages.filter(Boolean);
 
 // 3. 递归构建层级菜单结构
 type NavPage = { file: string; [key: string]: any };
@@ -57,5 +60,5 @@ function treeToNav(tree: Record<string, NavTreeNode>, parentPath = ''): NavItem[
   });
 }
 
-const tree = buildTree(pages);
+const tree = buildTree(validPages);
 export const sidebarMenu: NavItem[] = treeToNav(tree); 
