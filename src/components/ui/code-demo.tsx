@@ -12,15 +12,6 @@ import code from '../Sidebar.astro?raw'
 
 export function CodeBlockThemed() {
     const [copied, setCopied] = useState(false)
-
-//     const code = `function calculateTotal(items) {
-//   return items
-//     .filter(item => item.price > 0)
-//     .reduce((total, item) => {
-//       return total + item.price * item.quantity;
-//     }, 0);
-// }`
-
     const handleCopy = () => {
         navigator.clipboard.writeText(code)
         setCopied(true)
