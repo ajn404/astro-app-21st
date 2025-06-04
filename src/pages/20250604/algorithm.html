@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Sliding Window Max Visualization</title>
+    <style>
+      body {
+        font-family: sans-serif;
+      }
+      .frame {
+        margin-bottom: 20px;
+        border-bottom: 1px solid #ccc;
+        padding-bottom: 20px;
+      }
+      .window {
+        background-color: #eef;
+        padding: 5px;
+        display: inline-block;
+        margin-top: 10px;
+      }
+      .num {
+        display: inline-block;
+        width: 30px;
+        text-align: center;
+      }
+    </style>
+  </head>
+  <body>
+    <h2>滑动窗口最大值动画</h2>
+    <div id="visualization"></div>
+
+    <script>
+      function visualizeMaxSlidingWindow(nums, k) {
+        const frames = [];
+        const deque = [];
+        const result = [];
+
+        for (let i = 0; i < nums.length; i++) {
+          // 移除超出窗口的索引
+          if (deque.length && deque[0] < i - k + 1) {
+            deque.shift();
+          }
+
+          // 删除比当前小的元素
+          while (deque.length && nums[deque[deque.length - 1]] <= nums[i]) {
+            deque.pop();
+          }
+
+          // 添加当前索引
+          deque.push(i);
+
+          // 记录结果
+          if (i >= k - 1) {
+            result.push(nums[deque[0]]);
+          }
+
+          // 保存当前帧信息
+          frames.push({
+            i,
+            nums,
+            deque: [...deque],
+            result: [...result],
+            window: nums.slice(Math.max(0, i - k + 1), i + 1),
+          });
+        }
+
+        return frames;
+      }
+
+      // 数据输入
+      const nums = [1, 3, -1, -3, 5, 3, 6, 7];
+      const k = 3;
+
+      const frames = visualizeMaxSlidingWindow(nums, k);
+      const container = document.getElementById("visualization");
+
+      frames.forEach((frame, index) => {
+        const div = document.createElement("div");
+        div.className = "frame";
+        div.innerHTML = `
+    <strong>Frame ${index}</strong><br/>
+    i = ${frame.i}, nums[i] = ${frame.nums[frame.i]}<br/>
+    Current window: 
+    <div class="window">
+      ${frame.window.map((n) => `<span class="num">${n}</span>`).join("")}
+    </div>
+    Deque indices: [${frame.deque.join(", ")}]<br/>
+    Result so far: [${frame.result.join(", ")}]<br/>
+  `;
+        container.appendChild(div);
+      });
+    </script>
+  </body>
+</html>
