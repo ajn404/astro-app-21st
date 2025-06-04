@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Search Matrix Animation</title>
+  <style>
+    table {
+      border-collapse: collapse;
+      margin-top: 20px;
+    }
+    td {
+      width: 40px;
+      height: 40px;
+      text-align: center;
+      border: 1px solid black;
+    }
+    .highlight { background-color: yellow; }
+  </style>
+</head>
+<body>
+
+<h2>Search Matrix - Animation Demo</h2>
+<button onclick="step()">Next Step</button>
+
+<table id="matrix"></table>
+
+<script>
+const matrix = [
+  [1,  4,  7, 11],
+  [2,  5,  8, 12],
+  [3,  6,  9, 16],
+  [10,13,14,17]
+];
+const target = 5;
+
+let currentMatrix = JSON.parse(JSON.stringify(matrix)); // deep copy
+
+function drawMatrix() {
+  const table = document.getElementById("matrix");
+  table.innerHTML = "";
+  for (let row of currentMatrix) {
+    let tr = document.createElement("tr");
+    for (let val of row) {
+      let td = document.createElement("td");
+      if (val === 'X') td.className = "highlight";
+      else td.innerText = val;
+      tr.appendChild(td);
+    }
+    table.appendChild(tr);
+  }
+}
+
+function step() {
+  if (currentMatrix.length === 0 || currentMatrix[0].length === 0) {
+    alert("Finished. Not found.");
+    return;
+  }
+
+  const n = currentMatrix[0].length;
+  const curVal = currentMatrix[0][n - 1];
+
+  if (curVal === target) {
+    alert("Found!");
+    return;
+  }
+
+  if (target > curVal) {
+    currentMatrix.shift(); // remove row
+  } else {
+    currentMatrix[0].pop(); // remove column
+  }
+
+  drawMatrix();
+}
+drawMatrix();
+</script>
+
+</body>
+</html>
